@@ -1,0 +1,31 @@
+version: '3.8'
+services:
+  store-service:
+    build:
+      context: ../../
+      dockerfile: backend/store-service/Dockerfile
+    ports:
+      - "3002:3000"
+    depends_on:
+      - store-db
+    environment:
+      - DB_HOST=store-db
+      - DB_PORT=5432
+      - DB_USER=store_user
+      - DB_PASS=Store@123
+      - DB_NAME=store_db
+    networks:
+      - saga_network
+  store-db:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_USER: store_user
+      POSTGRES_PASSWORD: Store@123
+      POSTGRES_DB: store_db
+    ports:
+      - "5002:5432"
+    networks:
+      - saga_network
+networks:
+  saga_network:
+    external: true
